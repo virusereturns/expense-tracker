@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Expense List{% endblock %}
+
+{% block content %}
+
+<!-- Summary Section -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+  {% for category in big_category_summaries %}
+    <div class="{% cycle 'bg-green-100' 'bg-blue-100' 'bg-purple-100' 'bg-red-100' %} p-4 rounded-lg shadow text-center">
+        <div class="text-sm text-gray-600">{{ category.name }}</div>
+        <div class="text-xl font-bold">${{ category.total }}</div>
+    </div>
+  {% empty %}
+  <div>No categories found.</div>
+  {% endfor %}
+</div>
+
+<!-- Filter Buttons -->
+<div class="flex flex-wrap justify-center gap-4 mb-6">
+    <a href="{% url 'expenses:expense_list' %}?filter=today" class="{% if filter_by == 'today' %}bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded{% else %}bg-gray-100 text-gray-600 font-semibold py-2 px-4 rounded{% endif %}">Today</a>
+    <a href="{% url 'expenses:expense_list' %}?filter=this_month" class="{% if filter_by == 'this_month' %}bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded{% else %}bg-gray-100 text-gray-600 font-semibold py-2 px-4 rounded{% endif %}">This Month</a>
+    <a href="{% url 'expenses:expense_list' %}?filter=all" class="{% if filter_by == 'all' %}bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded{% else %}bg-gray-100 text-gray-600 font-semibold py-2 px-4 rounded{% endif %}">All Expenses</a>
+</div>
+
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-4">Expenses</h1>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-2 text-left text-gray-600">Amount</th>
+                    <th class="px-4 py-2 text-left text-gray-600">Category</th>
+                    <th class="px-4 py-2 text-left text-gray-600">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                    <tr class="border-t">
+                        <td class="px-4 py-2">{{ expense.amount }}</td>
+                        <td class="px-4 py-2">{{ expense.category }}</td>
+                        <td class="px-4 py-2">{{ expense.date }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-4 py-6 text-center text-gray-500">
+                            No expenses yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-6 text-center">
+        <a href="{% url 'expenses:expense_create' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+            Add New Expense
+        </a>
+    </div>
+</div>
+
+{% endblock %}
